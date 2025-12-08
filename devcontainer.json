@@ -1,0 +1,7 @@
+    {
+      "name": "PHP Codespace",
+      "image": "mcr.microsoft.com/devcontainers/php:latest",
+      "features": {
+        "ghcr.io/devcontainers/features/php:8.5": {}
+      }
+    }
