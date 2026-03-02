@@ -1,0 +1,52 @@
+services:
+  mariadb:
+    image: bitnami/mariadb:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=bn_myapp
+      - MARIADB_DATABASE=bitnami_myapp
+      - MARIADB_PASSWORD=b1tnam1_my@pp
+    volumes:
+      - mariadb_data:/bitnami/mariadb
+    networks:
+      - laravel-network
+    restart: unless-stopped
+    healthcheck:
+      # Usa root sin password (porque ALLOW_EMPTY_PASSWORD=yes), así no necesitamos variables
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot --password= --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  application:
+    image: bitnamilegacy/laravel:latest
+    environment:
+      - LARAVEL_DATABASE_TYPE=mysql
+      - LARAVEL_DATABASE_HOST=mariadb
+      - LARAVEL_DATABASE_PORT_NUMBER=3306
+      - LARAVEL_DATABASE_NAME=bitnami_myapp
+      - LARAVEL_DATABASE_USER=bn_myapp
+      - LARAVEL_DATABASE_PASSWORD=b1tnam1_my@pp
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+      - QUEUE_CONNECTION=sync
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - laravel-network
+    restart: unless-stopped
+
+volumes:
+  mariadb_data:
+    driver: local
+
+networks:
+  laravel-network:
+    driver: bridge
