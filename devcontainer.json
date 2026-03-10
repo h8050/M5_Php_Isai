@@ -1,7 +1,9 @@
-    {
-      "name": "PHP Codespace",
-      "image": "mcr.microsoft.com/devcontainers/php:8.2",
-      "features": {
-        "ghcr.io/devcontainers/features/php:8.2": {}
-      }
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2", // Or your base image
+  "features": {
+    "ghcr.io/devcontainers/features/php:1": {
+      "version": "8.2",
+      "extensions": ["intl", "pdo_pgsql", "zip"]
     }
+  }
+}
